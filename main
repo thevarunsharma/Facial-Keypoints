@@ -5,7 +5,7 @@ import dlib
 from imutils import face_utils
 
 face_det = dlib.get_frontal_face_detector()
-mark_det = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
+mark_det = dlib.shape_predictor("./model/shape_predictor_68_face_landmarks.dat")
 
 def get_face(gray):
     faces = face_det(gray, 0)
