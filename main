@@ -1,0 +1,36 @@
+#!/usr/bin/env python3
+
+import cv2
+import dlib
+from imutils import face_utils
+
+face_det = dlib.get_frontal_face_detector()
+mark_det = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
+
+def get_face(gray):
+    faces = face_det(gray, 0)
+    return faces
+
+cap = cv2.VideoCapture(0)
+cap.set(cv2.CAP_PROP_POS_MSEC, 50)
+while True:
+    _, frame = cap.read()
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    faces = get_face(gray)
+    if len(faces)==0:
+        cv2.putText(frame, 'No face detected!', (200, 440), cv2.FONT_HERSHEY_SIMPLEX,
+                    1, (0,0,255),2)
+    for rect in faces:
+        shape = mark_det(gray, rect)
+        shape = face_utils.shape_to_np(shape)
+
+        for (x, y) in shape:
+            cv2.circle(frame, (x, y), 2, (0, 255, 0), -1)
+
+    cv2.putText(frame, "press 'q' to quit", (400, 470), cv2.FONT_HERSHEY_SIMPLEX,
+                0.7, (0,0,0),1)
+    cv2.imshow('Facial Keypoints', frame)
+    if cv2.waitKey(1) & 0xFF == ord('q'): break
+
+cap.release()
+cv2.destroyAllWindows()
